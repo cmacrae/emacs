@@ -1,0 +1,60 @@
+{
+  "nodes": {
+    "emacs-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1620323090,
+        "narHash": "sha256-UEBp1W6nUEJO6vvJu7vcDFMv8e6z4ldZ/IBy3u2y+os=",
+        "owner": "emacs-mirror",
+        "repo": "emacs",
+        "rev": "704755a568300985caa9e143f46f17d364e5eda9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "emacs-mirror",
+        "repo": "emacs",
+        "type": "github"
+      }
+    },
+    "emacs-vterm-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1617983886,
+        "narHash": "sha256-jC/q6RAyZhKM3YRu0aefy7uR0/7m1h0FxtYqWrD74DM=",
+        "owner": "akermu",
+        "repo": "emacs-libvterm",
+        "rev": "2b1392cb2b14ec5bd0b7355197d5f353aa5d3983",
+        "type": "github"
+      },
+      "original": {
+        "owner": "akermu",
+        "repo": "emacs-libvterm",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1620331527,
+        "narHash": "sha256-VrOReqQZRYMkEybGGoHmjYdviw3H9vEd8/gyd+iAvq0=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "ae58a56abb2b35379aef37c55a646d1cbff68103",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "emacs-src": "emacs-src",
+        "emacs-vterm-src": "emacs-vterm-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

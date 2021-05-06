@@ -1,0 +1,79 @@
+name: "Build"
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - patches/**
+      - flake.*
+      - .github/**
+
+  # Build on PR
+  pull_request:
+
+  # Allow trigger for external PRs
+  workflow_dispatch:
+
+  # Also run regularly because pushes initiated by GitHub Actions don't
+  # trigger the above events.
+  schedule:
+    # every day at 00:00 UTC
+    - cron: '00 00 * * *'
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+
+    - uses: actions/checkout@v2.3.4
+      with:
+        # Nix Flakes doesn't work on shallow clones
+        fetch-depth: 0
+ 
+    - uses: cachix/install-nix-action@v13
+      with:
+        install_url: https://github.com/numtide/nix-flakes-installer/releases/download/nix-2.4pre20210429_d15a196/install
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+
+    - uses: cachix/cachix-action@v10
+      with:
+        name: emacs
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+
+    - run: rm -f flake.lock && nix flake update
+
+    - run: |
+        nix show-derivation ".#emacs" > emacs.drv
+        echo -e "\n\e[4mflake.lock\e[0m\n"
+        cat ./flake.lock
+        echo -e "\n\e[4mDerivation\e[0m\n"
+        cat ./emacs.drv
+
+    - uses: actions/cache@v2
+      id: cache-drv
+      with:
+        path: ./emacs.drv
+        key: emacs-drv-${{ hashFiles('emacs.drv') }}
+
+    - run: nix build .#emacs
+      if: steps.cache-drv.outputs.cache-hit != 'true'
+
+    - run: >-
+        nix log $(nix show-derivation .#emacs | jq -r '.|keys[0]')
+        > emacs-build.log
+      if: ${{ failure() }}
+
+    - uses: actions/upload-artifact@v2
+      if: ${{ failure() }}
+      with:
+        name: emacs-build.log
+        path: emacs-build.log
+
+    - run: rm -f emacs.drv
+
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      if: ${{ success() }}
+      with:
+        commit_message: "automation: Update flake inputs"
