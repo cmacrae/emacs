@@ -69,9 +69,9 @@
 
               buildInputs = o.buildInputs ++ [ darwin.apple_sdk.frameworks.WebKit ];
 
-              # TODO: More to come...
               patches = [
                 ./patches/fix-window-role.patch
+                ./patches/no-titlebar.patch
               ];
 
               postPatch = o.postPatch + ''
