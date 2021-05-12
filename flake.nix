@@ -2,7 +2,7 @@
   description = "Nightly custom Emacs builds for macOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     emacs-src = {
       url = "github:emacs-mirror/emacs";
