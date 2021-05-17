@@ -64,7 +64,7 @@
 
           emacs = (emacs.override { srcRepo = true; nativeComp = true; withXwidgets = true; }).overrideAttrs (
             o: rec {
-              version = "master";
+              version = "28";
               src = emacs-src;
 
               buildInputs = o.buildInputs ++ [ darwin.apple_sdk.frameworks.WebKit ];
