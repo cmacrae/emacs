@@ -57,19 +57,8 @@ jobs:
         path: ./emacs.drv
         key: emacs-drv-${{ hashFiles('emacs.drv') }}
 
-    - run: nix build .#emacs
+    - run: nix build -L .#emacs
       if: steps.cache-drv.outputs.cache-hit != 'true'
-
-    - run: >-
-        nix log $(nix show-derivation .#emacs | jq -r '.|keys[0]')
-        > emacs-build.log
-      if: ${{ failure() }}
-
-    - uses: actions/upload-artifact@v2
-      if: ${{ failure() }}
-      with:
-        name: emacs-build.log
-        path: emacs-build.log
 
     - run: rm -f emacs.drv
 
