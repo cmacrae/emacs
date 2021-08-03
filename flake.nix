@@ -71,7 +71,9 @@
 
               patches = [
                 ./patches/fix-window-role.patch
-                ./patches/no-titlebar.patch
+                # TODO: Create new patch following recent refactoring for src/nsterm.m
+                #       https://github.com/emacs-mirror/emacs/commits/master/src/nsterm.m
+                # ./patches/no-titlebar.patch
               ];
 
               postPatch = o.postPatch + ''
