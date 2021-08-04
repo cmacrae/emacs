@@ -1,90 +1,17 @@
 diff --git a/src/nsterm.m b/src/nsterm.m
-index bb20886ab1..a0102625bd 100644
+index 3676418c9b..12d9d930ee 100644
 --- a/src/nsterm.m
 +++ b/src/nsterm.m
-@@ -441,11 +441,9 @@ - (NSColor *)colorUsingDefaultColorSpace
+@@ -433,9 +433,9 @@ - (NSColor *)colorUsingDefaultColorSpace
  
  /* These flags will be OR'd or XOR'd with the NSWindow's styleMask
     property depending on what we're doing.  */
 -#define FRAME_DECORATED_FLAGS (NSWindowStyleMaskTitled              \
 -                               | NSWindowStyleMaskResizable         \
 -                               | NSWindowStyleMaskMiniaturizable    \
-+#define FRAME_UNDECORATED_FLAGS (NSWindowStyleMaskResizable      \
++#define FRAME_DECORATED_FLAGS (NSWindowStyleMaskBorderless       \
++                               | NSWindowStyleMaskResizable      \
 +                               | NSWindowStyleMaskMiniaturizable \
                                 | NSWindowStyleMaskClosable)
--#define FRAME_UNDECORATED_FLAGS NSWindowStyleMaskBorderless
- 
- /* TODO: Get rid of need for these forward declarations.  */
- static void ns_condemn_scroll_bars (struct frame *f);
-@@ -1946,26 +1944,14 @@ Hide the window (X11 semantics)
-     {
-       block_input ();
- 
--      if (NILP (new_value))
--        {
--          FRAME_UNDECORATED (f) = false;
--          [window setStyleMask: ((window.styleMask | FRAME_DECORATED_FLAGS)
--                                  ^ FRAME_UNDECORATED_FLAGS)];
-+      [window setToolbar: nil];
-+      /* Do I need to release the toolbar here?  */
- 
--          [view createToolbar: f];
--        }
--      else
--        {
--          [window setToolbar: nil];
--          /* Do I need to release the toolbar here?  */
--
--          FRAME_UNDECORATED (f) = true;
--          [window setStyleMask: ((window.styleMask | FRAME_UNDECORATED_FLAGS)
--                                 ^ FRAME_DECORATED_FLAGS)];
--        }
-+      FRAME_UNDECORATED (f) = true;
-+      [window setStyleMask: (window.styleMask | FRAME_UNDECORATED_FLAGS)];
- 
-       /* At this point it seems we don't have an active NSResponder,
--         so some key presses (TAB) are swallowed by the system.  */
-+	 so some key presses (TAB) are swallowed by the system.  */
-       [window makeFirstResponder: view];
- 
-       unblock_input ();
-@@ -7519,11 +7505,9 @@ - (instancetype) initFrameFromEmacs: (struct frame *)f
- 
-   win = [[EmacsWindow alloc]
-             initWithContentRect: r
--                      styleMask: (FRAME_UNDECORATED (f)
--                                  ? FRAME_UNDECORATED_FLAGS
--                                  : FRAME_DECORATED_FLAGS)
--                        backing: NSBackingStoreBuffered
--                          defer: YES];
-+		      styleMask: FRAME_UNDECORATED_FLAGS
-+			backing: NSBackingStoreBuffered
-+			  defer: YES];
- 
- #if defined (NS_IMPL_COCOA) && MAC_OS_X_VERSION_MAX_ALLOWED >= 1070
- #if MAC_OS_X_VERSION_MIN_REQUIRED < 1070
-@@ -7556,11 +7540,6 @@ - (instancetype) initFrameFromEmacs: (struct frame *)f
-   name = NILP (tem) ? @"Emacs" : [NSString stringWithLispString:tem];
-   [win setTitle: name];
- 
--  /* toolbar support */
--  if (! FRAME_UNDECORATED (f))
--    [self createToolbar: f];
--
--
-   [win setAppearance];
- 
- #if defined (NS_IMPL_COCOA) && MAC_OS_X_VERSION_MAX_ALLOWED >= 101000
-@@ -9163,6 +9142,12 @@ - (BOOL)canBecomeKeyWindow
- {
-   return !FRAME_NO_ACCEPT_FOCUS (((EmacsView *)[self delegate])->emacsframe);
- }
-+
-+- (BOOL)canBecomeMainWindow
-+{
-+  return YES;
-+}
-+
- @end /* EmacsWindow */
- 
+ #define FRAME_UNDECORATED_FLAGS NSWindowStyleMaskBorderless
  
