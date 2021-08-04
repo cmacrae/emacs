@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     emacs-src = {
-      url = "github:emacs-mirror/emacs";
+      url = "git://git.sv.gnu.org/emacs.git";
       flake = false;
     };
 

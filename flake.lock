@@ -3,17 +3,17 @@
     "emacs-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1628031731,
-        "narHash": "sha256-Lo86gUVGx2G3VKhOrOI81GgH6Q3yUTiwA8hVkBF8U80=",
-        "owner": "emacs-mirror",
-        "repo": "emacs",
-        "rev": "b0d07396e8d970407a17388cdc207b9f3608f90e",
-        "type": "github"
+        "lastModified": 1628067038,
+        "narHash": "sha256-Se/fy5Sx19pTaKMMSIoNZ5gHSku7/WPMbzk1ML0QIUM=",
+        "ref": "master",
+        "rev": "1910800f93cdc5fd9bc657e7f65e9db9c8e94de0",
+        "revCount": 149293,
+        "type": "git",
+        "url": "git://git.sv.gnu.org/emacs.git"
       },
       "original": {
-        "owner": "emacs-mirror",
-        "repo": "emacs",
-        "type": "github"
+        "type": "git",
+        "url": "git://git.sv.gnu.org/emacs.git"
       }
     },
     "emacs-vterm-src": {
