@@ -3,11 +3,11 @@
     "emacs-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1629581874,
-        "narHash": "sha256-CzVpHOtafFaC0OTwGfY11oq+nVb+0yljJwsIm7H6Yww=",
+        "lastModified": 1629677620,
+        "narHash": "sha256-tP30XkwFaIWPeip8unBEuRVzM8+OkQRWZ+yr+INEAVg=",
         "ref": "master",
-        "rev": "5f1ee1f8e6d5c7fe3a189676ed6e4bc07af718b0",
-        "revCount": 149559,
+        "rev": "cc2c150636e63aba4cd6f3c3d63a38072dd63018",
+        "revCount": 149580,
         "type": "git",
         "url": "git://git.sv.gnu.org/emacs.git"
       },
