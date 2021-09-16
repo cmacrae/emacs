@@ -84,7 +84,7 @@
                 cp ${self.packages.x86_64-darwin.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
               '';
 
-              CFLAGS = "-DMAC_OS_X_VERSION_MAX_ALLOWED=110203 -g -O2";
+              CFLAGS = "-DMAC_OS_X_VERSION_MAX_ALLOWED=110502 -g -O2";
             }
           );
         };
