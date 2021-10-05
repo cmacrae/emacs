@@ -36,6 +36,7 @@ jobs:
         install_url: https://github.com/numtide/nix-flakes-installer/releases/download/nix-2.4pre20210823_af94b54/install
         extra_nix_config: |
           experimental-features = nix-command flakes
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
     - uses: cachix/cachix-action@v10
       with:
@@ -51,7 +52,7 @@ jobs:
         CURRENT_VERSION_ASSIGNMENT=$(grep -E 'version = "[0-9].*";' flake.nix)
         echo "Derived Emacs version ${EMACS_VERSION} from source"
         NEW_VERSION_ASSIGNMENT=$(echo $CURRENT_VERSION_ASSIGNMENT | sed "s/[0-9].*/${EMACS_VERSION}\"\;/")
-        sed "s/$CURRENT_VERSION_ASSIGNMENT/$NEW_VERSION_ASSIGNMENT/" flake.nix > flake.nix # BSD sed :(
+        sed -i '' "s/$CURRENT_VERSION_ASSIGNMENT/$NEW_VERSION_ASSIGNMENT/" flake.nix 
 
     - run: |
         nix show-derivation ".#emacs" > emacs.drv
