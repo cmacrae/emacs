@@ -45,6 +45,15 @@ jobs:
     - run: rm -f flake.lock && nix flake update
 
     - run: |
+        EMACS_URL=$(nix flake metadata --json | jq -r '.locks.nodes["emacs-src"].locked | "\(.url)?ref=\(.ref)&rev=\(.rev)"')
+        EMACS_STORE=$(nix flake prefetch $EMACS_URL --json | jq -r '.storePath')
+        EMACS_VERSION=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' ${EMACS_STORE}/README)
+        CURRENT_VERSION_ASSIGNMENT=$(grep -E 'version = "[0-9].*";' flake.nix)
+        echo "Derived Emacs version ${EMACS_VERSION} from source"
+        NEW_VERSION_ASSIGNMENT=$(echo $CURRENT_VERSION_ASSIGNMENT | sed "s/[0-9].*/${EMACS_VERSION}\"\;/")
+        sed "s/$CURRENT_VERSION_ASSIGNMENT/$NEW_VERSION_ASSIGNMENT/" flake.nix > flake.nix # BSD sed :(
+
+    - run: |
         nix show-derivation ".#emacs" > emacs.drv
         echo -e "\n\e[4mflake.lock\e[0m\n"
         cat ./flake.lock
