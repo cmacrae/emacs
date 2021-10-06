@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     emacs-src = {
-      url = "git://git.sv.gnu.org/emacs.git";
+      url = "github:emacs-mirror/emacs";
       flake = false;
     };
 
@@ -64,7 +64,7 @@
 
           emacs = (emacs.override { srcRepo = true; nativeComp = true; withXwidgets = true; }).overrideAttrs (
             o: rec {
-version = "29.0.50";
+              version = "29.0.50";
               src = emacs-src;
 
               buildInputs = o.buildInputs ++ [ darwin.apple_sdk.frameworks.WebKit ];
