@@ -2,7 +2,7 @@
 [![CI badge](https://github.com/cmacrae/emacs/actions/workflows/build.yaml/badge.svg)](https://github.com/cmacrae/emacs/actions/workflows/build.yaml)
 [![BuiltWithNix badge](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5)](https://builtwithnix.org)
 [![Cachix badge](https://img.shields.io/badge/Cachix-store-blue.svg?logo=hack-the-box&logoColor=73C3D5)](https://app.cachix.org/cache/emacs)
-[![Emacs badge](https://img.shields.io/badge/Emacs-HEAD-adadad.svg?logo=gnu-emacs&labelColor=9266CC&logoColor=ffffff)](http://git.savannah.gnu.org/cgit/emacs.git/log/)
+[![Emacs badge](https://img.shields.io/badge/Emacs-29.0.50-adadad.svg?logo=gnu-emacs&labelColor=9266CC&logoColor=ffffff)](http://git.savannah.gnu.org/cgit/emacs.git/log/)
 
 This repository provides nightly automated builds of Emacs from HEAD for macOS Nix environments with the following additions:
 - Native Compilation ([gccemacs](https://www.emacswiki.org/emacs/GccEmacs))
