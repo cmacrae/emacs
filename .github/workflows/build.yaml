@@ -31,30 +31,40 @@ jobs:
         # Nix Flakes doesn't work on shallow clones
         fetch-depth: 0
  
-    - uses: cachix/install-nix-action@v13
+    - name: Install Nix
+      uses: cachix/install-nix-action@v13
       with:
         install_url: https://github.com/numtide/nix-flakes-installer/releases/download/nix-2.4pre20210823_af94b54/install
         extra_nix_config: |
           experimental-features = nix-command flakes
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-    - uses: cachix/cachix-action@v10
+    - name: Set up binary cache
+      uses: cachix/cachix-action@v10
       with:
         name: emacs
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-    - run: rm -f flake.lock && nix flake update
+    - name: Update inputs
+      run: rm -f flake.lock && nix flake update
 
-    - run: |
-        EMACS_URL=$(nix flake metadata --json | jq -r '.locks.nodes["emacs-src"].locked | "\(.url)?ref=\(.ref)&rev=\(.rev)"')
+    - name: Derive Emacs version from source
+      id: version
+      run: |
+        EMACS_URL=$(nix flake metadata --json | jq -r '.locks.nodes["emacs-src"].locked | "\(.type):\(.owner)/\(.repo)/\(.rev)"')
         EMACS_STORE=$(nix flake prefetch $EMACS_URL --json | jq -r '.storePath')
         EMACS_VERSION=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' ${EMACS_STORE}/README)
         CURRENT_VERSION_ASSIGNMENT=$(grep -E 'version = "[0-9].*";' flake.nix)
+        README_VERSION=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' README.md)
         echo "Derived Emacs version ${EMACS_VERSION} from source"
         NEW_VERSION_ASSIGNMENT=$(echo $CURRENT_VERSION_ASSIGNMENT | sed "s/[0-9].*/${EMACS_VERSION}\"\;/")
         sed -i '' "s/$CURRENT_VERSION_ASSIGNMENT/$NEW_VERSION_ASSIGNMENT/" flake.nix 
+        sed -i '' "s/$README_VERSION/$EMACS_VERSION/" README.md
+        echo "::set-output name=rev::$(nix flake metadata --json | jq -r '.locks.nodes["emacs-src"].locked.rev[0:7]')"
+        echo "::set-output name=ver::${EMACS_VERSION}"
 
-    - run: |
+    - name: Show derivation information
+      run: |
         nix show-derivation ".#emacs" > emacs.drv
         echo -e "\n\e[4mflake.lock\e[0m\n"
         cat ./flake.lock
@@ -75,4 +85,4 @@ jobs:
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: ${{ success() }}
       with:
-        commit_message: "automation: Update flake inputs"
+        commit_message: "automation: Emacs ${{ steps.version.outputs.ver }} -> ${{ steps.version.outputs.rev }}"
