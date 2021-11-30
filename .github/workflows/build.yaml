@@ -61,6 +61,9 @@ jobs:
         echo "::set-output name=rev::$(nix flake metadata --json | jq -r '.locks.nodes["emacs-src"].locked.rev[0:7]')"
         echo "::set-output name=ver::${EMACS_VERSION}"
 
+    - name: Format flake.nix
+      run: nix run nixpkgs#nixpkgs-fmt flake.nix
+
     - name: Show derivation information
       run: |
         nix show-derivation ".#emacs" > emacs.drv
