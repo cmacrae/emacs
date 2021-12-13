@@ -17,31 +17,36 @@
 
   outputs = { self, nixpkgs, emacs-src, emacs-vterm-src }:
     let
-      pkgs = import nixpkgs {
-        config = { };
-        system = "x86_64-darwin";
-      };
+      supportedSystems = [ "x86_64-darwin" "aarch64-darwin" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      nixpkgsFor = forAllSystems (system: import nixpkgs {
+        inherit system;
+        overlays = [ self.overlay ];
+      });
     in
-    with pkgs; {
-      packages.x86_64-darwin = pkgs.extend self.overlay;
+      {
+        packages = forAllSystems (system: {
+          emacs = nixpkgsFor.${system}.emacs;
+          emacs-vterm = nixpkgsFor.${system}.emacs-vterm;
+        });
 
       overlay = final: prev: {
-        emacs-vterm = stdenv.mkDerivation rec {
+        emacs-vterm = prev.stdenv.mkDerivation rec {
           pname = "emacs-vterm";
           version = "master";
 
           src = emacs-vterm-src;
 
           nativeBuildInputs = [
-            cmake
-            libtool
-            glib.dev
+            prev.cmake
+            prev.libtool
+            prev.glib.dev
           ];
 
           buildInputs = [
-            glib.out
-            libvterm-neovim
-            ncurses
+            prev.glib.out
+            prev.libvterm-neovim
+            prev.ncurses
           ];
 
           cmakeFlags = [
@@ -49,10 +54,10 @@
           ];
 
           preConfigure = ''
-            echo "include_directories(\"${glib.out}/lib/glib-2.0/include\")" >> CMakeLists.txt
-            echo "include_directories(\"${glib.dev}/include/glib-2.0\")" >> CMakeLists.txt
-            echo "include_directories(\"${ncurses.dev}/include\")" >> CMakeLists.txt
-            echo "include_directories(\"${libvterm-neovim}/include\")" >> CMakeLists.txt
+            echo "include_directories(\"${prev.glib.out}/lib/glib-2.0/include\")" >> CMakeLists.txt
+            echo "include_directories(\"${prev.glib.dev}/include/glib-2.0\")" >> CMakeLists.txt
+            echo "include_directories(\"${prev.ncurses.dev}/include\")" >> CMakeLists.txt
+            echo "include_directories(\"${prev.libvterm-neovim}/include\")" >> CMakeLists.txt
           '';
 
           installPhase = ''
@@ -62,12 +67,12 @@
           '';
         };
 
-        emacs = (emacs.override { srcRepo = true; nativeComp = true; withXwidgets = true; }).overrideAttrs (
+        emacs = (prev.emacs.override { srcRepo = true; nativeComp = true; withXwidgets = true; }).overrideAttrs (
           o: rec {
             version = "29.0.50";
             src = emacs-src;
 
-            buildInputs = o.buildInputs ++ [ darwin.apple_sdk.frameworks.WebKit ];
+            buildInputs = o.buildInputs ++ [ prev.darwin.apple_sdk.frameworks.WebKit ];
 
             patches = [
               ./patches/fix-window-role.patch
@@ -80,8 +85,8 @@
             '';
 
             postInstall = o.postInstall + ''
-              cp ${self.packages.x86_64-darwin.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
-              cp ${self.packages.x86_64-darwin.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
+              cp ${self.packages.${builtins.currentSystem}.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
+              cp ${self.packages.${builtins.currentSystem}.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
             '';
 
             CFLAGS = "-DMAC_OS_X_VERSION_MAX_ALLOWED=110203 -g -O2";
