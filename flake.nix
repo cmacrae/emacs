@@ -85,8 +85,8 @@
             '';
 
             postInstall = o.postInstall + ''
-              cp ${self.packages.${builtins.currentSystem}.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
-              cp ${self.packages.${builtins.currentSystem}.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
+              cp ${final.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
+              cp ${final.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
             '';
 
             CFLAGS = "-DMAC_OS_X_VERSION_MAX_ALLOWED=110203 -g -O2";
