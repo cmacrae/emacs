@@ -9,9 +9,21 @@ This repository provides nightly automated builds of Emacs from HEAD for macOS N
 - [X Widgets](https://www.emacswiki.org/emacs/EmacsXWidgets) (Webkit) support
 - [libvterm](https://github.com/akermu/emacs-libvterm)
 - Patched window role to work nicely with [yabai](https://github.com/koekeishiya/yabai)
-- Patched frame to hide window decorations
+
+## Recent Changes
+
+The `no-titlebar` frame patch has been removed, as it can be implemented with
+pure Emacs Lisp by putting the following early on during initialization (e.g. in
+`early-init.el`):
+
+```emacs-lisp
+(add-to-list 'default-frame-alist '(undecorated . t))
+```
+
+See https://github.com/d12frosted/homebrew-emacs-plus/issues/433#issuecomment-1025547880 for further background.
 
 ## Usage
+
 To use this flake on your system, add it to your configuration inputs & overlays.  
 It overlays the `pkgs.emacs` package.  
 There is a [complimentary binary cache](https://app.cachix.org/cache/emacs) available which is pushed to nightly.
