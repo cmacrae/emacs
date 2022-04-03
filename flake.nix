@@ -76,6 +76,7 @@
 
             patches = [
               ./patches/fix-window-role.patch
+              ./patches/system-appearance.patch
             ];
 
             postPatch = o.postPatch + ''
