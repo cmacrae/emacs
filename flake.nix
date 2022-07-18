@@ -1,5 +1,5 @@
 {
-  description = "Nightly custom Emacs builds for macOS";
+  description = "Nightly custom Emacs builds for macOS and Linux";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -17,7 +17,7 @@
 
   outputs = { self, nixpkgs, emacs-src, emacs-vterm-src }:
     let
-      supportedSystems = [ "x86_64-darwin" "aarch64-darwin" ];
+      supportedSystems = [ "x86_64-darwin" "aarch64-darwin" "x86_64-linux" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system: import nixpkgs {
         inherit system;
@@ -72,7 +72,7 @@
             version = "29.0.50";
             src = emacs-src;
 
-            buildInputs = o.buildInputs ++ [ prev.darwin.apple_sdk.frameworks.WebKit ];
+              buildInputs = o.buildInputs ++ (final.lib.optionals final.stdenv.isDarwin [ prev.darwin.apple_sdk.frameworks.WebKit ]);
 
             patches = [
               ./patches/fix-window-role.patch
