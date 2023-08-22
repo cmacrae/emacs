@@ -6,7 +6,6 @@
 
 This repository provides nightly automated builds of Emacs from HEAD for macOS Nix environments with the following additions:
 - Native Compilation ([gccemacs](https://www.emacswiki.org/emacs/GccEmacs))
-- [X Widgets](https://www.emacswiki.org/emacs/EmacsXWidgets) (Webkit) support
 - [libvterm](https://github.com/akermu/emacs-libvterm)
 - Patched window role to work nicely with [yabai](https://github.com/koekeishiya/yabai)
 
